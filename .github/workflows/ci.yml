@@ -12,5 +12,6 @@ jobs:
         github_access_token: ${{ secrets.GITHUB_TOKEN }}
     - uses: cachix/cachix-action@v14
       with:
-        name: tools authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
+        name: tools
+        authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
     - run: nix build
