@@ -19,7 +19,7 @@
       in {
 
         packages.nanoc = mkPackage pkgs;
-        defaultPackage = self.packages."${system}".nanoc;
+        packages.default = self.packages."${system}".nanoc;
 
         apps.nanoc = flake-utils.lib.mkApp {
           drv = self.packages."${system}".nanoc;
