@@ -11,11 +11,20 @@
     , nixpkgs
     , flake-utils
     }:
-    flake-utils.lib.eachDefaultSystem (system:
-      with import nixpkgs { system = system; };
-      {
+      let
+        mkPackage = pkgs: pkgs.callPackage ./nanoc.nix { };
+      in
+      flake-utils.lib.eachDefaultSystem (system:  let
+        pkgs = nixpkgs.legacyPackages.${system};
+      in {
 
-        defaultPackage = pkgs.callPackage ./nanoc.nix { };
+        packages.nanoc = mkPackage pkgs;
+        defaultPackage = self.packages."${system}".nanoc;
+
+        apps.nanoc = flake-utils.lib.mkApp {
+          drv = self.packages."${system}".nanoc;
+        };
+        apps.default = self.apps."${system}".nanoc;
 
         devShell = pkgs.mkShell {
           buildInputs = [
@@ -25,7 +34,9 @@
           inputsFrom = builtins.attrValues self.packages.${system};
         };
 
-        overlays = import ./overlays.nix {inherit inputs;};
-
-      });
+      }) // {
+        overlays.default = final: prev: {
+          nanoc = mkPackage final;
+        };
+      };
 }
