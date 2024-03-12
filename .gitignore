@@ -1,0 +1,7 @@
+# nix things
+.direnv/
+result
+
+# nanoc things
+story/output/
+story/tmp/
